@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Manager.io Inventory Watch v2.6</title>
+<title>Manager.io Inventory Watch v2.7</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f6f8fa;color:#24292f;min-height:100vh}
@@ -44,6 +44,14 @@ button.btn-icon:hover:not(:disabled){background:#ffebe9;border-color:#ff8182}
 .hero{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:16px}
 h1{font-size:24px;margin:0 0 4px}
 .sub{color:#656d76;font-size:13px}
+.quantity-basis-note{margin-top:8px;font-size:12px;color:#656d76;line-height:1.55}
+.quantity-basis-note .basis-title{display:flex;align-items:center;gap:5px;margin-bottom:1px}
+.quantity-basis-note .basis-icon{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border:1px solid #656d76;border-radius:50%;font-size:10px;line-height:1;cursor:help;position:relative;outline:none}
+.quantity-basis-note .basis-icon:focus{box-shadow:0 0 0 2px #0969da33}
+.quantity-basis-note .basis-tooltip{position:absolute;left:0;top:calc(100% + 8px);width:330px;background:#fff;color:#24292f;border:1px solid #d0d7de;border-radius:8px;padding:10px 12px;box-shadow:0 8px 24px rgba(27,31,36,.14);font-size:12px;line-height:1.55;z-index:10;opacity:0;visibility:hidden;transform:translateY(-3px);transition:opacity .15s ease,transform .15s ease,visibility .15s ease;pointer-events:none}
+.quantity-basis-note .basis-icon:hover .basis-tooltip,.quantity-basis-note .basis-icon:focus .basis-tooltip{opacity:1;visibility:visible;transform:translateY(0)}
+.quantity-basis-note .basis-tooltip strong{font-weight:700}
+.quantity-basis-note .basis-rule{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;color:#24292f}
 .stats{display:flex;gap:10px;flex-wrap:wrap}
 .stat{background:#fff;border:1px solid #d8dee4;border-radius:8px;padding:8px 12px;min-width:100px}
 .stat strong{display:block;font-size:18px}
@@ -118,12 +126,13 @@ table.inv-table tr:hover{background:#f8fafc}
 .po-body{padding:16px 18px}.po-fields{display:grid;grid-template-columns:180px 1fr;gap:10px 14px;align-items:center;margin-bottom:18px}.po-fields label{font-weight:600;font-size:13px}.po-fields input,.po-fields select,.po-fields textarea{width:100%;padding:8px 10px;border:1px solid #d0d7de;border-radius:7px;font:inherit;background:#fff;resize:vertical}.po-fields textarea{min-height:72px}
 .po-options{border-top:1px solid #d8dee4;padding-top:14px;margin-top:14px}.po-options label{font-size:13px;font-weight:600;display:flex;gap:8px;align-items:center}
 .po-lines{border:1px solid #d8dee4;border-radius:8px;overflow:hidden}.po-lines table{width:100%;border-collapse:collapse;font-size:13px}.po-lines th{background:#f6f8fa;color:#656d76;text-align:left;padding:9px 10px;border-bottom:1px solid #d8dee4}.po-lines td{padding:8px 10px;border-bottom:1px solid #f0f2f5;vertical-align:middle}.po-lines tr:last-child td{border-bottom:none}.po-qty{width:110px;padding:7px 8px;border:1px solid #d0d7de;border-radius:6px;font:inherit;text-align:right}.po-qty:focus{outline:2px solid #0969da33;border-color:#0969da}.po-note{background:#f6f8fa;border:1px solid #d8dee4;border-radius:7px;padding:9px 11px;font-size:12px;color:#656d76;margin-top:10px}.po-warning{background:#fff8c5;color:#7a4f00;border:1px solid #f0d98a;border-radius:7px;padding:9px 11px;font-size:12px;margin-top:12px}.po-error{background:#ffebe9;color:#cf222e;border:1px solid #ff818266;border-radius:7px;padding:9px 11px;font-size:12px;margin-top:12px}.po-success{background:#dafbe1;color:#1a7f37;border:1px solid #aceebb;border-radius:7px;padding:9px 11px;font-size:12px;margin-top:12px}
+.transfer-target{background:#f6f8fa;border:1px solid #d8dee4;border-radius:7px;padding:8px 10px;font-weight:600}.transfer-available{font-size:12px;color:#656d76}.transfer-source-note{background:#f6f8fa;border:1px solid #d8dee4;border-radius:7px;padding:9px 11px;font-size:12px;color:#656d76;margin-top:10px}
 .po-foot{padding:12px 18px;border-top:1px solid #d8dee4;display:flex;gap:8px;justify-content:flex-end}.po-muted{color:#656d76;font-size:12px}
 
 /* Tab 2 Reconciliation Panel Styles */
 .recon-panel{background:#fff;border:1px solid #d8dee4;border-radius:10px;padding:20px;box-shadow:0 1px 3px rgba(27,31,36,.04)}
 .recon-section-title{font-size:16px;font-weight:700;margin:0 0 14px;color:#24292f;display:flex;align-items:center;gap:8px}
-.recon-top-grid{display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:flex-end;margin-bottom:16px}
+.recon-top-grid{display:grid;grid-template-columns:220px 280px 1fr;gap:16px;align-items:flex-end;margin-bottom:16px}
 .recon-field-group{display:flex;flex-direction:column;gap:6px}.recon-field-group label{font-size:13px;font-weight:600;color:#24292f}
 .recon-field-group input,.recon-field-group select,.recon-field-group textarea{padding:7px 10px;border:1px solid #d0d7de;border-radius:7px;font:inherit;background:#fff}
 .recon-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
@@ -185,7 +194,7 @@ table.inv-table tr:hover{background:#f8fafc}
     <div class="brand-group">
       <div class="brand-title-wrap">
         <span class="brand-title">Inventory <span>Watch</span></span>
-        <span class="version-tag">v2.6</span>
+        <span class="version-tag">v2.7</span>
       </div>
       <div class="brand-sub">Manager.io Integrated • Developed by Jesse Alcaraz</div>
     </div>
@@ -211,6 +220,19 @@ table.inv-table tr:hover{background:#f8fafc}
       <div>
         <h1>Stock on Hand</h1>
         <div id="status" class="sub">Loading inventory data…</div>
+        <div class="quantity-basis-note" aria-label="Quantity basis">
+          <div class="basis-title">
+            <span class="basis-icon" tabindex="0" role="button" aria-label="About quantity basis">ⓘ
+              <span class="basis-tooltip" role="tooltip">
+                <strong>Qty Owned</strong> is the total quantity of inventory owned by the business across locations.<br>
+                <strong>Qty On Hand</strong> is the physical quantity recorded at the selected inventory location.<br>
+                <strong>If quantities appear inconsistent, review Qty to Receive and Qty to Deliver in Manager.io, as these may explain differences between owned and physical quantities.</strong>
+              </span>
+            </span>
+            <span>Quantity basis:</span>
+          </div>
+          <div class="basis-rule">All Locations → Qty Owned&nbsp;&nbsp;|&nbsp;&nbsp;Specific Location → Qty On Hand</div>
+        </div>
       </div>
       <div class="stats">
         <div class="stat stat-total"><strong id="total">—</strong><small>Items</small></div>
@@ -221,6 +243,9 @@ table.inv-table tr:hover{background:#f8fafc}
     </section>
 
     <div class="toolbar">
+      <select id="location-filter" class="filter" onchange="changeDashboardLocation()">
+        <option value="__all__">All Locations</option>
+      </select>
       <select id="filter" class="filter" onchange="refreshView()">
         <option value="all">All items</option>
         <option value="critical">Zero / negative</option>
@@ -249,6 +274,7 @@ table.inv-table tr:hover{background:#f8fafc}
       <span class="selection-count" id="selection-count-label">0 items selected</span>
       <button id="btn-clear-selection" disabled onclick="clearSelection()">Clear</button>
       <button id="btn-create-po" class="primary" disabled onclick="openPurchaseOrderModal()">Add to Purchase Order</button>
+      <button id="btn-create-transfer" class="primary" disabled onclick="openInventoryTransferModal()" style="display:none">Add to Inventory Transfer</button>
     </div>
 
     <div id="app"></div>
@@ -267,8 +293,14 @@ table.inv-table tr:hover{background:#f8fafc}
           <label for="recon-date">Inventory Date</label>
           <input id="recon-date" type="date" value="">
         </div>
+        <div class="recon-field-group">
+          <label for="recon-location">Inventory Location</label>
+          <select id="recon-location">
+            <option value="">Select location…</option>
+          </select>
+        </div>
         <div class="recon-actions">
-          <button class="primary" id="recon-load-btn" onclick="loadReconciliation(document.getElementById('recon-date').value)">Load System Quantity</button>
+          <button class="primary" id="recon-load-btn" onclick="loadReconciliation(document.getElementById('recon-date').value,document.getElementById('recon-location').value)">Load System Quantity</button>
           <button onclick="exportReconciliation()">Export Count Sheet</button>
           <label style="display:inline-flex;align-items:center;padding:7px 12px;border:1px solid #d0d7de;border-radius:7px;background:#fff;font-weight:600;cursor:pointer;font-size:13px">
             Import Count Sheet
@@ -314,9 +346,16 @@ table.inv-table tr:hover{background:#f8fafc}
 let activeMainTab = 'watch';
 let currentViewMode = 'table';
 let activePoLines = [];
+let activeTransferLines = [];
 let reconciliationRows = [];
 let reconciliationAccounts = [];
 let reconciliationCurrentId = '';
+let inventoryLocations = [];
+let dashboardLocation = '__all__';
+let reconciliationLocation = '';
+let defaultInventoryLocationName = 'Unspecified';
+let dashboardLocationQtyCache = null;
+const DEFAULT_LOCATION = '__default__';
 
 function switchMainTab(tab) {
   activeMainTab = tab;
@@ -404,6 +443,214 @@ const qtyOwned=Object.create(null);
 function addQty(k,q){const n=Number(q);if(k&&Number.isFinite(n)&&n)qtyOwned[k]=(qtyOwned[k]||0)+Math.round(n*SCALE)}
 function subQty(k,q){const n=Number(q);if(k&&Number.isFinite(n)&&n)qtyOwned[k]=(qtyOwned[k]||0)-Math.round(n*SCALE)}
 function getQty(k){return (qtyOwned[k]||0)/SCALE}
+
+function normalizeLocationKey(v){
+  if(v==null || v==='') return null;
+  return relKey(v);
+}
+function locationLabel(key){
+  if(key===null || key==='') return defaultInventoryLocationName;
+  const x=inventoryLocations.find(l=>l.key===key);
+  return x?.name||key||'Unknown Location';
+}
+function locationValue(key){return key===null ? DEFAULT_LOCATION : key}
+function selectedLocationKey(value){return value===DEFAULT_LOCATION ? null : (value||null)}
+
+async function loadInventoryLocations(){
+  const [customData,defaultData]=await Promise.all([
+    postMessageWithResponse({type:'api-request',method:'GET',path:'/api4/custom-inventory-location-batch'}),
+    postMessageWithResponse({type:'api-request',method:'GET',path:'/api4/default-inventory-location'})
+  ]);
+
+  const customRows=Array.isArray(customData)?customData:(customData?.items||customData?.data||[]);
+  const seen=new Set();
+  inventoryLocations=[];
+
+  customRows.forEach(r=>{
+    const d=r?.item||r||{};
+    const key=relKey(r?.key)||relKey(d?.key)||relKey(d?.id);
+    const name=d?.name||d?.Name||d?.text||d?.uniqueName||key;
+    if(key&&!seen.has(key)){
+      seen.add(key);
+      inventoryLocations.push({key,name:String(name),isDefault:false});
+    }
+  });
+
+  const defaultRow=Array.isArray(defaultData)?defaultData[0]:(defaultData?.item||defaultData?.data||defaultData);
+  const defaultObj=defaultRow?.item||defaultRow||{};
+  const defaultName=defaultObj?.name||defaultObj?.Name||defaultObj?.text||defaultObj?.uniqueName;
+  if(defaultName) defaultInventoryLocationName=String(defaultName);
+
+  inventoryLocations.sort((a,b)=>a.name.localeCompare(b.name));
+  renderLocationSelectors();
+  return inventoryLocations;
+}
+function renderLocationSelectors(){
+  const dash=document.getElementById('location-filter');
+  if(dash){
+    const current=dash.value||dashboardLocation;
+    dash.innerHTML='<option value="__all__">All Locations</option>'+
+      `<option value="${DEFAULT_LOCATION}">${esc(defaultInventoryLocationName)}</option>`+
+      inventoryLocations.map(l=>`<option value="${esc(l.key)}">${esc(l.name)}</option>`).join('');
+    dash.value=[...dash.options].some(o=>o.value===current)?current:'__all__';
+    dashboardLocation=dash.value;
+  }
+
+  const recon=document.getElementById('recon-location');
+  if(recon){
+    const current=recon.value||reconciliationLocation;
+    recon.innerHTML='<option value="">Select location…</option>'+
+      `<option value="${DEFAULT_LOCATION}">${esc(defaultInventoryLocationName)}</option>`+
+      inventoryLocations.map(l=>`<option value="${esc(l.key)}">${esc(l.name)}</option>`).join('');
+    recon.value=[...recon.options].some(o=>o.value===current)?current:'';
+    reconciliationLocation=recon.value;
+  }
+}
+
+function addLocationQty(map,itemKey,locationKey,qty){
+  const n=Number(qty);
+  if(!itemKey||!Number.isFinite(n)||n===0)return;
+  const lk=locationValue(locationKey);
+  if(!map[lk])map[lk]=Object.create(null);
+  map[lk][itemKey]=(map[lk][itemKey]||0)+Math.round(n*SCALE);
+}
+function getLocationQty(map,itemKey,locationKey){
+  const lk=locationValue(locationKey);
+  return (map[lk]?.[itemKey]||0)/SCALE;
+}
+
+async function computeQtyByLocation(asOfDate,status){
+  const qtyByLocation=Object.create(null);
+  async function source(path,label,optional=false){
+    status?.(label+'…');
+    try{
+      const rows=await fetchBatch(path,(loaded,total)=>status?.(total?`${label} · ${loaded.toLocaleString()} / ${total.toLocaleString()}`:`${label} · ${loaded.toLocaleString()} loaded`));
+      return asOfDate ? rows.filter(r=>dateAtOrBefore(r,asOfDate)) : rows;
+    }catch(e){
+      if(optional && /not[_ -]?found|no endpoint|404/i.test(String(e?.message||e))) return [];
+      throw e;
+    }
+  }
+
+  const [starting,purchases,debits,sales,credits,writes,transfers,goodsReceipts,deliveryNotes]=await Promise.all([
+    source('/api4/inventory-item-starting-balance-batch','Starting balances'),
+    source('/api4/purchase-invoice-batch','Purchase invoices'),
+    source('/api4/debit-note-batch','Debit notes'),
+    source('/api4/sales-invoice-batch','Sales invoices'),
+    source('/api4/credit-note-batch','Credit notes'),
+    source('/api4/inventory-write-off-batch','Write-offs'),
+    source('/api4/inventory-transfer-batch','Inventory transfers'),
+    source('/api4/goods-receipt-batch','Goods receipts',true),
+    source('/api4/delivery-note-batch','Delivery notes',true)
+  ]);
+
+  // Starting balances establish physical quantity by location.
+  starting.forEach(r=>{
+    const d=r?.item||r, itemKey=relKey(d?.inventoryItem), lines=d?.qtyOnHandLines||[];
+    if(lines.length){
+      lines.forEach(x=>addLocationQty(qtyByLocation,itemKey,normalizeLocationKey(x?.inventoryLocation??x?.location),x?.qtyOnHand));
+    }else{
+      addLocationQty(qtyByLocation,itemKey,null,d?.qtyOwned??0);
+    }
+  });
+
+  // When Delivery Notes / Goods Receipts are enabled, invoices only affect Qty On Hand
+  // when explicitly marked as also acting as the corresponding physical document.
+  purchases.forEach(r=>{
+    const d=r?.item||r, loc=normalizeLocationKey(d?.purchaseInventoryLocation);
+    if(d?.alsoActsAsGoodsReceipt===true)(d?.lines||[]).forEach(x=>addLocationQty(qtyByLocation,relKey(x?.item),loc,x?.qty));
+  });
+  debits.forEach(r=>{
+    const d=r?.item||r, loc=normalizeLocationKey(d?.purchaseInventoryLocation);
+    if(d?.alsoActsAsGoodsReceipt===true)(d?.lines||[]).forEach(x=>addLocationQty(qtyByLocation,relKey(x?.item),loc,-Number(x?.qty||0)));
+  });
+  sales.forEach(r=>{
+    const d=r?.item||r, loc=normalizeLocationKey(d?.salesInventoryLocation);
+    if(d?.alsoActsAsDeliveryNote===true)(d?.lines||[]).forEach(x=>addLocationQty(qtyByLocation,relKey(x?.item),loc,-Number(x?.qty||0)));
+  });
+  credits.forEach(r=>{
+    const d=r?.item||r, loc=normalizeLocationKey(d?.salesInventoryLocation);
+    if(d?.alsoActsAsDeliveryNote===true)(d?.lines||[]).forEach(x=>addLocationQty(qtyByLocation,relKey(x?.item),loc,x?.qty));
+  });
+
+  // Physical movements recorded through standalone Goods Receipts.
+  // Qty is used as entered by Manager: positive receipt, negative return/debit-note receipt.
+  goodsReceipts.forEach(r=>{
+    const d=r?.item||r, loc=normalizeLocationKey(d?.inventoryLocation??d?.toInventoryLocation);
+    (d?.lines||[]).forEach(x=>addLocationQty(qtyByLocation,relKey(x?.item),loc,x?.qty));
+  });
+
+  // Physical movements recorded through standalone Delivery Notes.
+  // Qty is normally positive for delivery; a negative quantity records a return/credit-note delivery.
+  deliveryNotes.forEach(r=>{
+    const d=r?.item||r, loc=normalizeLocationKey(d?.inventoryLocation??d?.fromInventoryLocation);
+    (d?.lines||[]).forEach(x=>addLocationQty(qtyByLocation,relKey(x?.item),loc,-Number(x?.qty||0)));
+  });
+
+  writes.forEach(r=>{
+    const d=r?.item||r, loc=normalizeLocationKey(d?.inventoryLocation);
+    (d?.items||[]).forEach(x=>addLocationQty(qtyByLocation,relKey(x?.inventoryItem),loc,-Number(x?.qty||0)));
+  });
+
+  transfers.forEach(r=>{
+    const d=r?.item||r, from=normalizeLocationKey(d?.inventoryLocation), to=normalizeLocationKey(d?.toInventoryLocation);
+    (d?.lines||[]).forEach(x=>{
+      const key=relKey(x?.item), qty=Number(x?.qty||0);
+      addLocationQty(qtyByLocation,key,from,-qty);
+      addLocationQty(qtyByLocation,key,to,qty);
+    });
+  });
+  return qtyByLocation;
+}
+
+async function changeDashboardLocation(){
+  const sel=document.getElementById('location-filter');
+  dashboardLocation=sel?.value||'__all__';
+  const status=document.getElementById('status');
+  if(!records.length){refreshView();return;}
+
+  const btn=document.getElementById('load-btn');
+  if(btn)btn.disabled=true;
+  if(status)status.textContent='Loading inventory for selected location…';
+
+  try{
+    if(dashboardLocation==='__all__'){
+      await computeQtyOwned(msg=>{if(status)status.textContent=msg;});
+      records=records.map(r=>{
+        const q=getQty(r.key);
+        return {...r,qty:q,status:classify(q,r.reorderPoint)};
+      });
+    }else{
+      if(!dashboardLocationQtyCache){
+        dashboardLocationQtyCache=await computeQtyByLocation(null,msg=>{if(status)status.textContent=msg;});
+      }
+      const locationKey=selectedLocationKey(dashboardLocation);
+      records=records.map(r=>{
+        const q=getLocationQty(dashboardLocationQtyCache,r.key,locationKey);
+        return {...r,qty:q,status:classify(q,r.reorderPoint)};
+      });
+    }
+
+    records.sort((a,b)=>a.qty-b.qty);
+    document.getElementById('total').textContent=records.length.toLocaleString();
+    document.getElementById('critical').textContent=records.filter(r=>r.qty<=0).length.toLocaleString();
+    document.getElementById('low').textContent=records.filter(r=>r.status==='low').length.toLocaleString();
+    document.getElementById('adequate').textContent=records.filter(r=>r.qty>0&&r.status!=='low').length.toLocaleString();
+    const locationKey=selectedLocationKey(dashboardLocation);
+    const label=dashboardLocation==='__all__'?'All Locations':locationLabel(locationKey);
+    if(status)status.textContent=`✓ Updated · ${records.length.toLocaleString()} active inventory items · ${label}`;
+    refreshView();
+  }catch(e){
+    if(status)status.textContent='Could not calculate inventory';
+    console.error(e);
+  }finally{
+    if(btn)btn.disabled=false;
+  }
+}
+
+async function refreshDashboardQuantities(){
+  return changeDashboardLocation();
+}
 
 async function computeQtyOwned(status){
   Object.keys(qtyOwned).forEach(k=>delete qtyOwned[k]);
@@ -581,11 +828,17 @@ function refreshSelectionBar(){
   const countLabel = document.getElementById('selection-count-label');
   const clearBtn = document.getElementById('btn-clear-selection');
   const poBtn = document.getElementById('btn-create-po');
+  const transferBtn = document.getElementById('btn-create-transfer');
   const count = selectedKeys.size;
+  const canTransfer = dashboardLocation !== '__all__';
 
   if(countLabel) countLabel.textContent = `${count.toLocaleString()} item${count===1?'':'s'} selected`;
   if(clearBtn) clearBtn.disabled = count === 0;
   if(poBtn) poBtn.disabled = count === 0;
+  if(transferBtn){
+    transferBtn.style.display = canTransfer ? '' : 'none';
+    transferBtn.disabled = count === 0;
+  }
 }
 
 function clearSelection(){selectedKeys.clear();refreshView()}
@@ -768,7 +1021,7 @@ async function loadReconciliationAccounts(){
 }
 
 function parseManagerDate(v){const m=String(v??'').match(/^(\d{4}-\d{2}-\d{2})/);return m?m[1]:null}
-function recordDate(r){const x=r?.item||r||{};return parseManagerDate(x.date??x.Date)}
+function recordDate(r){const x=r?.item||r||{};return parseManagerDate(x.date??x.Date??x.issueDate??x.IssueDate)}
 function dateAtOrBefore(r,d){const rd=recordDate(r);return !rd||rd<=d}
 
 async function computeQtyOwnedAsOf(asOfDate,status){
@@ -803,7 +1056,7 @@ function downloadTextFile(name,text){const b=new Blob([text],{type:'text/csv;cha
 
 function buildReconciliationCsv(){
   const date=document.getElementById('recon-date')?.value||'',id=reconciliationCurrentId||'';
-  const lines=['# Inventory Watch Inventory Reconciliation',`# Reconciliation ID,${csvCell(id)}`,`# Inventory Date,${csvCell(date)}`,`# Generated Timestamp,${csvCell(new Date().toISOString())}`,'',['Item Key','Item','Code','Unit','System Qty','Actual Qty'].map(csvCell).join(',')];
+  const lines=['# Inventory Watch Inventory Reconciliation',`# Reconciliation ID,${csvCell(id)}`,`# Inventory Date,${csvCell(date)}`,`# Inventory Location,${csvCell(locationLabel(selectedLocationKey(document.getElementById('recon-location')?.value||'')))}`,`# Generated Timestamp,${csvCell(new Date().toISOString())}`,'',['Item Key','Item','Code','Unit','System Qty','Actual Qty'].map(csvCell).join(',')];
   reconciliationRows.forEach(r=>lines.push([r.key,r.name,r.code||'',r.unit||'',formatQty(r.systemQty),r.physicalQty==null?'':formatQty(r.physicalQty)].map(csvCell).join(',')));
   return lines.join('\r\n')+'\r\n';
 }
@@ -845,6 +1098,12 @@ function importReconciliationFile(file){
     if(!imported.length)throw new Error('The reconciliation file contains no inventory rows.');
     reconciliationRows=imported;
     const importedDate=meta['Inventory Date'];
+    const importedLocation=meta['Inventory Location'];
+    if(importedLocation){
+      const locValue=importedLocation===defaultInventoryLocationName?DEFAULT_LOCATION:(inventoryLocations.find(l=>l.name===importedLocation)?.key||'');
+      const locEl=document.getElementById('recon-location');
+      if(locEl&&locValue){locEl.value=locValue;reconciliationLocation=locValue;}
+    }
     if(importedDate&&/^\d{4}-\d{2}-\d{2}$/.test(importedDate)){
       const dateEl=document.getElementById('recon-date');if(dateEl)dateEl.value=importedDate;
     }
@@ -888,16 +1147,21 @@ function renderReconciliationTable(){
 
 function setPhysicalQty(i,v){const s=String(v??'').trim();reconciliationRows[i].physicalQty=s===''?null:Number(s);renderReconciliationTable()}
 
-async function loadReconciliation(date){
-  const st=document.getElementById('recon-status-bar'),btn=document.getElementById('recon-load-btn');if(!date){showReconMessage('Please choose an Inventory Date.');return}
+async function loadReconciliation(date,locationValueArg){
+  const st=document.getElementById('recon-status-bar'),btn=document.getElementById('recon-load-btn');
+  const locationValueSelected=locationValueArg ?? (document.getElementById('recon-location')?.value || '');
+  const locationKey=selectedLocationKey(locationValueSelected);
+  if(!date)return showReconMessage('Please choose an Inventory Date.');
+  if(locationValueSelected==='')return showReconMessage('Please choose an Inventory Location.');
+  reconciliationLocation=locationValueSelected;
   btn.disabled=true;btn.textContent='Loading…';
   try{
-    st.textContent='Calculating system quantity as of selected date…';
-    await computeQtyOwnedAsOf(date,msg=>st.textContent=msg);
+    st.textContent='Calculating system quantity for selected location…';
+    const map=await computeQtyByLocation(date,msg=>st.textContent=msg);
     reconciliationCurrentId=reconciliationId(date);
-    reconciliationRows=records.map(r=>({key:r.key,name:r.name,code:r.code,unit:r.unit,systemQty:getQty(r.key),physicalQty:null})).sort((a,b)=>a.name.localeCompare(b.name));
+    reconciliationRows=records.map(r=>({key:r.key,name:r.name,code:r.code,unit:r.unit,systemQty:getLocationQty(map,r.key,locationKey),physicalQty:null})).sort((a,b)=>a.name.localeCompare(b.name));
     renderReconciliationTable();
-    st.textContent=`✓ System inventory loaded as of ${date} · ${reconciliationRows.length.toLocaleString()} items`;
+    st.textContent=`✓ System inventory loaded as of ${date} · ${locationLabel(locationKey)} · ${reconciliationRows.length.toLocaleString()} items`;
     showReconMessage('Enter actual count for each item below. Blank means not counted.','success');
   }catch(e){
     st.textContent='Could not calculate inventory';
@@ -906,7 +1170,6 @@ async function loadReconciliation(date){
     btn.disabled=false;btn.textContent='Load System Quantity';
   }
 }
-
 function showReconMessage(t,type='error'){const e=document.getElementById('recon-message');if(e)e.innerHTML=`<div class="po-${type}" style="margin-bottom:12px">${esc(t)}</div>`}
 
 function exportReconciliation(){
@@ -983,6 +1246,8 @@ function openWriteOffPreview(){
       </div>
 
       <div class="recon-preview-fields">
+        <label>Inventory Location</label>
+        <div style="padding:8px 10px;border:1px solid #d0d7de;border-radius:7px;background:#f6f8fa;font-weight:600">${esc(locationLabel(selectedLocationKey(document.getElementById('recon-location')?.value||'')))}</div>
         <label for="recon-account">Allocation Account</label>
         <select id="recon-account"><option value="">Loading accounts…</option></select>
 
@@ -1030,7 +1295,7 @@ async function createInventoryWriteOff(){
     const value={
       date:date+'T00:00:00',
       reference:null,
-      inventoryLocation:null,
+      inventoryLocation:selectedLocationKey(document.getElementById('recon-location')?.value||''),
       description:desc||null,
       items:adj.map(r=>({inventoryItem:r.key,qty:r.managerQty})),
       allocation:accountKey(reconciliationAccounts[Number(ai)]),
@@ -1253,6 +1518,227 @@ function showToast(text){
   },4000);
 }
 
+function inventoryLocationOptionsHtml(excludeKey){
+  const targetKey=selectedLocationKey(dashboardLocation);
+  const options=[];
+  if(targetKey!==null) options.push(`<option value="${DEFAULT_LOCATION}">${esc(defaultInventoryLocationName)}</option>`);
+  inventoryLocations.forEach(l=>{
+    if(l.key!==targetKey) options.push(`<option value="${esc(l.key)}">${esc(l.name)}</option>`);
+  });
+  return options.join('');
+}
+
+function buildApi4InventoryTransferPayload(date, fromLocation, toLocation, description, lines){
+  return {
+    date: date + 'T00:00:00',
+    inventoryLocation: selectedLocationKey(fromLocation),
+    toInventoryLocation: selectedLocationKey(toLocation),
+    description: description || null,
+    lines: lines.map(line=>({
+      item: line.key,
+      lineDescription: null,
+      qty: line.qty,
+      customFields: {},
+      customFields2: {strings:{},decimals:{},dates:{},booleans:{},stringArrays:{},images:{}}
+    })),
+    customFields: {},
+    customFields2: {strings:{},decimals:{},dates:{},booleans:{},stringArrays:{},images:{}},
+    automaticReference: false,
+    cancelled: false
+  };
+}
+
+async function openInventoryTransferModal(){
+  if(dashboardLocation==='__all__') return;
+  const chosen=records.filter(r=>selectedKeys.has(r.key));
+  if(!chosen.length) return;
+
+  if(!dashboardLocationQtyCache){
+    const status=document.getElementById('status');
+    try{
+      dashboardLocationQtyCache=await computeQtyByLocation(null,msg=>{if(status)status.textContent=msg;});
+    }catch(err){
+      alert('Could not load inventory location balances.\\n\\n'+(err?.message||err));
+      return;
+    }
+  }
+
+  const targetKey=selectedLocationKey(dashboardLocation);
+  const sourceOptions=inventoryLocationOptionsHtml(targetKey);
+  if(!sourceOptions){
+    alert('No other inventory location is available as a source for this transfer.');
+    return;
+  }
+
+  activeTransferLines=chosen.map(r=>({
+    key:r.key,
+    name:r.name,
+    code:r.code,
+    unit:r.unit,
+    targetQty:Number(r.qty)||0,
+    qty:Math.max(0,Number(r.reorderPoint||0)-Number(r.qty||0))
+  }));
+  renderInventoryTransferModal();
+}
+
+function transferSourceLocationValue(){
+  return document.getElementById('transfer-from')?.value || '';
+}
+
+function renderTransferLinesTableHtml(){
+  const sourceValue=transferSourceLocationValue();
+  const sourceKey=sourceValue ? selectedLocationKey(sourceValue) : null;
+  return activeTransferLines.map((r,i)=>{
+    const available=sourceValue && dashboardLocationQtyCache
+      ? getLocationQty(dashboardLocationQtyCache,r.key,sourceKey)
+      : null;
+    const availableText=available===null ? '—' : formatQty(available);
+    return `<tr>
+      <td>${i+1}</td>
+      <td><strong>${esc(r.name)}</strong></td>
+      <td>${esc(r.code||'—')}</td>
+      <td>${esc(r.unit||'')}</td>
+      <td style="text-align:right"><span class="transfer-available">${availableText}</span></td>
+      <td style="text-align:right">
+        <input class="po-qty" id="transfer-qty-${i}" type="number" min="0" step="any" value="${r.qty}" onchange="activeTransferLines[${i}].qty = Number(this.value)">
+      </td>
+      <td style="text-align:center"><button type="button" class="btn-icon" onclick="removeTransferLine(${i})" title="Remove item">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderInventoryTransferModal(){
+  let overlay=document.getElementById('transfer-overlay');
+  const targetKey=selectedLocationKey(dashboardLocation);
+  const targetName=locationLabel(targetKey);
+  const sourceOptions=inventoryLocationOptionsHtml(targetKey);
+
+  if(!overlay){
+    overlay=document.createElement('div');
+    overlay.className='po-overlay';
+    overlay.id='transfer-overlay';
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click',e=>{if(e.target===overlay)closeInventoryTransferModal();});
+  }
+
+  overlay.innerHTML=`<div class="po-modal" role="dialog" aria-modal="true">
+    <div class="po-head">
+      <h2>Create Inventory Transfer</h2>
+      <span class="po-muted" id="transfer-selected-count">${activeTransferLines.length} selected item${activeTransferLines.length===1?'':'s'}</span>
+      <button class="close" onclick="closeInventoryTransferModal()">×</button>
+    </div>
+    <div class="po-body">
+      <div class="po-fields">
+        <label for="transfer-date">Date</label>
+        <input id="transfer-date" type="date" value="${todayInputValue()}">
+        <label for="transfer-from">From Location</label>
+        <select id="transfer-from" onchange="refreshTransferSourceAvailability()"><option value="">Select source location…</option>${sourceOptions}</select>
+        <label>To Location</label>
+        <div class="transfer-target">${esc(targetName)}</div>
+        <label for="transfer-description">Description</label>
+        <textarea id="transfer-description" rows="3" placeholder="Optional notes for this Inventory Transfer"></textarea>
+      </div>
+
+      <div class="po-lines">
+        <table>
+          <thead><tr>
+            <th style="width:40px">#</th><th>Item</th><th>Code</th><th>Unit</th>
+            <th style="width:120px;text-align:right">Available at Source</th>
+            <th style="width:130px;text-align:right">Qty to Transfer</th>
+            <th style="width:40px;text-align:center"></th>
+          </tr></thead>
+          <tbody id="transfer-lines-body">${renderTransferLinesTableHtml()}</tbody>
+        </table>
+      </div>
+
+      <div class="transfer-source-note">
+        Suggested quantity = Reorder Point − Qty On Hand at the selected location. You can adjust the Qty to Transfer before creating the transfer.
+      </div>
+      <div id="transfer-message"></div>
+    </div>
+    <div class="po-foot">
+      <button onclick="closeInventoryTransferModal()">Cancel</button>
+      <button class="primary" id="transfer-create-btn" onclick="createInventoryTransfer()">Create Inventory Transfer</button>
+    </div>
+  </div>`;
+}
+
+function refreshTransferSourceAvailability(){
+  const tbody=document.getElementById('transfer-lines-body');
+  if(tbody) tbody.innerHTML=renderTransferLinesTableHtml();
+}
+
+function removeTransferLine(index){
+  const removedKey=activeTransferLines[index]?.key;
+  if(removedKey) selectedKeys.delete(removedKey);
+  activeTransferLines.splice(index,1);
+  if(!activeTransferLines.length){
+    closeInventoryTransferModal();
+    refreshView();
+    return;
+  }
+  const tbody=document.getElementById('transfer-lines-body');
+  const countEl=document.getElementById('transfer-selected-count');
+  if(tbody) tbody.innerHTML=renderTransferLinesTableHtml();
+  if(countEl) countEl.textContent=`${activeTransferLines.length} selected item${activeTransferLines.length===1?'':'s'}`;
+  refreshView();
+}
+
+function closeInventoryTransferModal(){
+  document.getElementById('transfer-overlay')?.remove();
+}
+
+function showTransferMessage(text,type='error'){
+  const el=document.getElementById('transfer-message');
+  if(el) el.innerHTML=`<div class="po-${type}">${esc(text)}</div>`;
+}
+
+async function createInventoryTransfer(){
+  const overlay=document.getElementById('transfer-overlay');
+  if(!overlay) return;
+  const fromValue=document.getElementById('transfer-from').value;
+  const toValue=dashboardLocation;
+  const date=document.getElementById('transfer-date').value;
+  const description=document.getElementById('transfer-description').value.trim();
+
+  if(!date){showTransferMessage('Please choose an Inventory Transfer date.');return;}
+  if(!fromValue){showTransferMessage('Please choose a source location.');return;}
+  if(fromValue===toValue){showTransferMessage('Source and destination locations must be different.');return;}
+
+  const lines=activeTransferLines.map((r,i)=>({...r,qty:Number(document.getElementById(`transfer-qty-${i}`)?.value ?? r.qty)}));
+  const invalid=lines.find(r=>!Number.isFinite(r.qty)||r.qty<=0);
+  if(invalid){showTransferMessage(`Enter a quantity greater than zero for “${invalid.name}”, or remove that item from the transfer.`);return;}
+
+  const sourceKey=selectedLocationKey(fromValue);
+  const insufficient=lines.find(r=>{
+    const available=getLocationQty(dashboardLocationQtyCache,r.key,sourceKey);
+    return Number.isFinite(available) && r.qty>available;
+  });
+  if(insufficient){
+    const available=getLocationQty(dashboardLocationQtyCache,insufficient.key,sourceKey);
+    showTransferMessage(`“${insufficient.name}” has only ${formatQty(available)} available at the selected source location.`);
+    return;
+  }
+
+  const btn=document.getElementById('transfer-create-btn');
+  btn.disabled=true;btn.textContent='Creating…';
+  try{
+    const value=buildApi4InventoryTransferPayload(date,fromValue,toValue,description,lines);
+    const result=await postMessageWithResponse({type:'api-request',method:'POST',path:'/api4/inventory-transfer',body:{Value:value}});
+    const createdKey=relKey(result);
+    closeInventoryTransferModal();
+    clearSelection();
+    dashboardLocationQtyCache=null;
+    const status=document.getElementById('status');
+    status.textContent=createdKey?`✓ Inventory Transfer created in Manager · ${createdKey}`:'✓ Inventory Transfer created in Manager';
+    showToast(createdKey?`✓ Inventory Transfer created successfully · ${createdKey}`:'✓ Inventory Transfer created successfully');
+    await refreshDashboardQuantities();
+  }catch(err){
+    btn.disabled=false;btn.textContent='Create Inventory Transfer';
+    showTransferMessage(err?.message||String(err));
+  }
+}
+
 async function createPurchaseOrder(){
   const overlay=document.getElementById('po-overlay');
   if(!overlay)return;
@@ -1320,15 +1806,17 @@ async function createPurchaseOrder(){
 async function loadDashboard(){
   const btn=document.getElementById('load-btn'),bar=document.getElementById('progress-bar'),status=document.getElementById('status');
   btn.disabled=true;btn.textContent='Loading…';bar.style.width='0%';
+  dashboardLocationQtyCache=null;
   document.getElementById('recon-date').value = todayInputValue();
   
   try{
     status.textContent='Loading inventory items…';
     inventory=await fetchBatch('/api4/inventory-item-batch',(loaded,total)=>{
       status.textContent=total?`Loading items · ${loaded.toLocaleString()} / ${total.toLocaleString()}`:`Loading items · ${loaded.toLocaleString()}`;
-      if(total)bar.style.width=Math.min(45,Math.round(loaded/total*45))+'%';
+      if(total)bar.style.width=Math.min(35,Math.round(loaded/total*35))+'%';
     });
     const activeItems=inventory.filter(r=>!itemData(r)?.inactive);
+    await loadInventoryLocations();
 
     const [_,imageMap]=await Promise.all([
       computeQtyOwned(msg=>status.textContent=msg),
@@ -1360,7 +1848,9 @@ async function loadDashboard(){
     document.getElementById('critical').textContent=records.filter(r=>r.qty<=0).length.toLocaleString();
     document.getElementById('low').textContent=records.filter(r=>r.status==='low').length.toLocaleString();
     document.getElementById('adequate').textContent=records.filter(r=>r.qty>0 && r.status!=='low').length.toLocaleString();
-    bar.style.width='100%';status.textContent=`✓ Updated · ${records.length.toLocaleString()} active inventory items`;
+    bar.style.width='100%';
+    const initialLocationKey=selectedLocationKey(dashboardLocation);
+    status.textContent=`✓ Updated · ${records.length.toLocaleString()} active inventory items · ${dashboardLocation==='__all__'?'All Locations':locationLabel(initialLocationKey)}`;
     refreshView();btn.textContent='↻ Refresh';btn.disabled=false;
   }catch(err){
     status.textContent='Could not load inventory';
